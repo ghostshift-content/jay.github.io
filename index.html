@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jay Patel — Offensive Security Specialist</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #111118;
+    --bg-card: #16161f;
+    --accent: #00e5a0;
+    --accent-dim: #00e5a020;
+    --accent-glow: #00e5a040;
+    --text-primary: #e8e8ed;
+    --text-secondary: #8888a0;
+    --text-muted: #55556a;
+    --border: #222235;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) var(--bg-secondary);
+  }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+
+  .nav-logo span { color: var(--text-muted); }
+  .nav-links { display: flex; gap: 2rem; }
+
+  .nav-links a {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+    position: relative;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--accent);
+    transition: width 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a:hover::after { width: 100%; }
+
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+
+  .nav-hamburger span {
+    width: 24px; height: 2px;
+    background: var(--text-secondary);
+    transition: 0.3s;
+  }
+
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 8rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.3;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 30%, transparent 100%);
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+    top: 10%; right: -10%;
+    filter: blur(80px);
+    animation: pulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes pulse {
+    0% { opacity: 0.4; transform: scale(1); }
+    100% { opacity: 0.7; transform: scale(1.15); }
+  }
+
+  .hero-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-text .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .tag-dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  .hero-text h1 {
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+    letter-spacing: -2px;
+  }
+
+  .hero-text h1 .highlight { color: var(--accent); }
+
+  .hero-text .subtitle {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    max-width: 520px;
+    margin-bottom: 2rem;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .btn {
+    padding: 0.85rem 2rem;
+    border-radius: 6px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-primary { background: var(--accent); color: var(--bg-primary); }
+  .btn-primary:hover { box-shadow: 0 0 30px var(--accent-glow); transform: translateY(-2px); }
+  .btn-outline { background: transparent; color: var(--text-primary); border: 1px solid var(--border); }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  .hero-image-card { position: relative; }
+
+  .hero-image-wrapper {
+    width: 100%;
+    aspect-ratio: 3/4;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    position: relative;
+  }
+
+  .hero-image-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .hero-image-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+  }
+
+  .hero-image-badge {
+    position: absolute;
+    bottom: -16px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 0.5rem 1.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    white-space: nowrap;
+    letter-spacing: 1px;
+  }
+
+  .stats-row {
+    display: flex; gap: 2rem;
+    margin-top: 3rem; padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .stat-item .stat-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.8rem; font-weight: 700;
+    color: var(--accent); display: block;
+  }
+
+  .stat-item .stat-label {
+    font-size: 0.75rem; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 1px; margin-top: 0.25rem;
+  }
+
+  section { padding: 6rem 2rem; max-width: 1200px; margin: 0 auto; }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem; color: var(--accent);
+    letter-spacing: 3px; text-transform: uppercase; margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+    font-weight: 700; margin-bottom: 1rem; letter-spacing: -1px;
+  }
+
+  .section-desc {
+    color: var(--text-secondary); font-size: 1.05rem;
+    max-width: 600px; margin-bottom: 3rem;
+    font-weight: 300; line-height: 1.7;
+  }
+
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+
+  .service-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 2rem;
+    transition: all 0.4s; position: relative; overflow: hidden;
+  }
+
+  .service-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0; transition: opacity 0.4s;
+  }
+
+  .service-card:hover::before { opacity: 1; }
+  .service-card:hover { border-color: var(--accent-dim); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+
+  .service-icon {
+    width: 48px; height: 48px; border-radius: 10px;
+    background: var(--accent-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; margin-bottom: 1.25rem;
+  }
+
+  .service-card h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.75rem; }
+  .service-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.65; font-weight: 300; }
+
+  .about-content { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+  .about-text p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.8; margin-bottom: 1.5rem; font-weight: 300; }
+  .about-highlights { display: flex; flex-direction: column; gap: 1rem; }
+
+  .highlight-item {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.25rem 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+    transition: border-color 0.3s;
+  }
+
+  .highlight-item:hover { border-color: var(--accent-dim); }
+
+  .highlight-icon {
+    width: 40px; height: 40px; min-width: 40px;
+    border-radius: 8px; background: var(--accent-dim);
+    display: flex; align-items: center; justify-content: center; font-size: 1rem;
+  }
+
+  .highlight-item h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.15rem; }
+  .highlight-item span { font-size: 0.8rem; color: var(--text-muted); }
+
+  .timeline { position: relative; padding-left: 2rem; }
+
+  .timeline::before {
+    content: ''; position: absolute;
+    left: 0; top: 0; bottom: 0; width: 1px;
+    background: linear-gradient(180deg, var(--accent), var(--border) 70%, transparent);
+  }
+
+  .timeline-item { position: relative; padding-bottom: 3rem; padding-left: 2rem; }
+
+  .timeline-item::before {
+    content: ''; position: absolute;
+    left: -2rem; top: 6px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg-primary);
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+
+  .timeline-item:not(:first-child)::before {
+    background: var(--bg-card); border: 2px solid var(--border); box-shadow: none;
+  }
+
+  .timeline-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem; color: var(--accent);
+    letter-spacing: 1px; margin-bottom: 0.5rem;
+  }
+
+  .timeline-item h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.25rem; }
+  .timeline-item .company { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem; }
+  .timeline-item p { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.7; font-weight: 300; }
+
+  .tech-categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+
+  .tech-category {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.75rem;
+  }
+
+  .tech-category h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+  .tech-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  .tech-tag {
+    padding: 0.35rem 0.85rem; background: var(--accent-dim);
+    border: 1px solid transparent; border-radius: 20px;
+    font-size: 0.78rem; color: var(--text-secondary);
+    font-weight: 400; transition: all 0.3s;
+  }
+
+  .tech-tag:hover { border-color: var(--accent); color: var(--accent); }
+
+  .certs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+
+  .cert-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.5rem; text-align: center;
+    transition: all 0.3s;
+  }
+
+  .cert-card:hover { border-color: var(--accent-dim); transform: translateY(-3px); }
+
+  .cert-badge {
+    width: 50px; height: 50px; margin: 0 auto 1rem;
+    border-radius: 50%; background: var(--accent-dim);
+    display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+  }
+
+  .cert-card h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.35rem; line-height: 1.3; }
+  .cert-card span { font-size: 0.75rem; color: var(--text-muted); }
+
+  .bounty-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+
+  .bounty-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 2rem; transition: all 0.3s;
+  }
+
+  .bounty-card:hover { border-color: var(--accent-dim); transform: translateY(-3px); }
+
+  .bounty-platform {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem; color: var(--accent);
+    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+
+  .bounty-card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.75rem; }
+  .bounty-card p { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.65; font-weight: 300; }
+
+  .pub-list { display: flex; flex-direction: column; gap: 1rem; }
+
+  .pub-item {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.5rem 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 1rem; transition: all 0.3s;
+  }
+
+  .pub-item:hover { border-color: var(--accent-dim); }
+  .pub-item h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.25rem; }
+  .pub-item span { font-size: 0.8rem; color: var(--text-muted); }
+
+  .pub-link {
+    font-size: 0.8rem; color: var(--accent); text-decoration: none;
+    white-space: nowrap; font-weight: 500; transition: opacity 0.3s;
+  }
+
+  .pub-link:hover { opacity: 0.7; }
+
+  .contact-section { text-align: center; padding: 6rem 2rem; max-width: 700px; margin: 0 auto; }
+
+  .contact-links {
+    display: flex; justify-content: center; gap: 1rem;
+    flex-wrap: wrap; margin-top: 2rem;
+  }
+
+  .contact-link {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.75rem 1.5rem; background: var(--bg-card);
+    border: 1px solid var(--border); border-radius: 50px;
+    color: var(--text-secondary); text-decoration: none;
+    font-size: 0.85rem; transition: all 0.3s;
+  }
+
+  .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+
+  footer {
+    padding: 2rem; text-align: center;
+    border-top: 1px solid var(--border);
+    font-size: 0.75rem; color: var(--text-muted);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .section-divider { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+  .section-divider hr { border: none; border-top: 1px solid var(--border); }
+
+  .fade-in {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  }
+
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    .hero-content { grid-template-columns: 1fr; text-align: center; }
+    .hero-text .subtitle { margin-left: auto; margin-right: auto; }
+    .hero-cta { justify-content: center; }
+    .hero-text .tag { justify-content: center; }
+    .stats-row { justify-content: center; }
+    .hero-image-card { max-width: 280px; margin: 0 auto; order: -1; }
+    .about-content { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .nav-hamburger { display: flex; }
+    .nav-links.open {
+      display: flex; flex-direction: column;
+      position: absolute; top: 100%; left: 0; right: 0;
+      background: rgba(10,10,15,0.95); backdrop-filter: blur(20px);
+      padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); gap: 1rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .stats-row { flex-wrap: wrap; gap: 1.5rem; }
+    .services-grid { grid-template-columns: 1fr; }
+    .certs-grid { grid-template-columns: 1fr 1fr; }
+    .bounty-grid { grid-template-columns: 1fr; }
+    .pub-item { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">jay<span>.patel</span></div>
+  <div class="nav-links" id="navLinks">
+    <a href="#services">Services</a>
+    <a href="#about">About</a>
+    <a href="#experience">Experience</a>
+    <a href="#tools">Tools</a>
+    <a href="#research">Research</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<section class="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="tag"><span class="tag-dot"></span> Available for engagements</div>
+      <h1>Offensive Security<br><span class="highlight">Specialist</span></h1>
+      <p class="subtitle">
+        8+ years breaking into systems so attackers can't. Specialising in penetration testing, application security, and red team operations for enterprise environments.
+      </p>
+      <div class="hero-cta">
+        <a href="#contact" class="btn btn-primary">Get in Touch</a>
+        <a href="#services" class="btn btn-outline">View Services</a>
+      </div>
+      <div class="stats-row">
+        <div class="stat-item">
+          <span class="stat-num">8+</span>
+          <span class="stat-label">Years Experience</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">200+</span>
+          <span class="stat-label">Pentest Engagements</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">OSCP</span>
+          <span class="stat-label">Certified</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"><hr></div>
+<section id="services" class="fade-in">
+  <div class="section-label">// Services</div>
+  <h2 class="section-title">What I Do</h2>
+  <p class="section-desc">Comprehensive offensive security services tailored to identify and address vulnerabilities before adversaries exploit them.</p>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon">&#127760;</div>
+      <h3>Web &amp; API Penetration Testing</h3>
+      <p>Deep-dive assessments of web applications and APIs to uncover injection flaws, authentication bypasses, business logic vulnerabilities, and more &#8212; aligned with OWASP standards.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">&#127959;</div>
+      <h3>Infrastructure Testing</h3>
+      <p>Internal and external network penetration testing to identify misconfigurations, privilege escalation paths, and exposed services across your infrastructure.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">&#128241;</div>
+      <h3>Mobile Application Security</h3>
+      <p>Security assessments of iOS and Android applications including static and dynamic analysis, API communication review, and data storage inspection.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">&#9729;&#65039;</div>
+      <h3>Cloud Security Assessments</h3>
+      <p>Configuration reviews and penetration testing across AWS, Azure, and GCP environments to identify IAM misconfigurations, exposed storage, and privilege escalation vectors.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">&#128308;</div>
+      <h3>Red Team &amp; Purple Team</h3>
+      <p>Simulated adversary operations to test your detection and response capabilities end-to-end, with collaborative purple team exercises to close gaps in real-time.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">&#128269;</div>
+      <h3>Code Review &amp; SAST/DAST</h3>
+      <p>Static and dynamic code analysis using tools like Snyk, Checkmarx, and SonarQube &#8212; triaging findings and guiding developers toward secure fixes at the source.</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"><hr></div>
+<section id="about" class="fade-in">
+  <div class="section-label">// About</div>
+  <h2 class="section-title">About Me</h2>
+  <div class="about-content">
+    <div class="about-text">
+      <p>I'm Jay Patel &#8212; an offensive security specialist with over 8 years of experience and 200+ penetration tests completed. I perform penetration tests, triage vulnerabilities, contribute to Attack Surface Management, and participate in red and purple team exercises.</p>
+      <p>My career spans enterprise consulting, government agencies, and the private bug bounty ecosystem. I've worked with Australian blue-chip companies and federal/state government, and I continue to sharpen my skills through platforms like Cobalt, Synack, and HackerOne.</p>
+      <p>I hold a Master's in Applied Information Technology from Victoria University with a specialisation in Information Security. I'm driven by a passion for understanding how systems break and helping organisations build resilience against real-world threats.</p>
+    </div>
+    <div class="about-highlights">
+      <div class="highlight-item">
+        <div class="highlight-icon">&#128737;</div>
+        <div>
+          <h4>200+ Pentests Completed</h4>
+          <span>Web, API, Mobile, Infrastructure, Cloud</span>
+        </div>
+      </div>
+      <div class="highlight-item">
+        <div class="highlight-icon">&#127942;</div>
+        <div>
+          <h4>OSCP &amp; EWPTXv2</h4>
+          <span>Industry-recognised certifications</span>
+        </div>
+      </div>
+      <div class="highlight-item">
+        <div class="highlight-icon">&#128027;</div>
+        <div>
+          <h4>Bug Bounty Platforms</h4>
+          <span>Cobalt &#183; Synack &#183; HackerOne</span>
+        </div>
+      </div>
+      <div class="highlight-item">
+        <div class="highlight-icon">&#127891;</div>
+        <div>
+          <h4>Master's &#8212; Info Technology</h4>
+          <span>Victoria University, Sydney</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"><hr></div>
+<section id="experience" class="fade-in">
+  <div class="section-label">// Experience</div>
+  <h2 class="section-title">Career Timeline</h2>
+  <p class="section-desc">A track record of delivering offensive security services across enterprise, government, and startup environments.</p>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-date">Sep 2022 &#8212; Present</div>
+      <h3>Analyst, Offensive Security</h3>
+      <div class="company">National Australia Bank &#183; Melbourne</div>
+      <p>Leading penetration tests across web apps, APIs, and infrastructure. Participating in red/purple team exercises, triaging bug bounty and scanner findings, and supporting P1/P2 incident response through tech bridges. Conducting code analysis with Snyk and Checkmarx and coordinating remediation efforts.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Dec 2021 &#8212; Sep 2022</div>
+      <h3>Technical Consultant, Pentester</h3>
+      <div class="company">DXC Technology &#183; Australia</div>
+      <p>Performed penetration testing for Australian blue-chip companies and federal/state government agencies. Developed security test plans and consulted with developers on remediation strategies while managing concurrent assessments.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 2019 &#8212; Dec 2021</div>
+      <h3>Associate Consultant, Technical</h3>
+      <div class="company">DXC Technology &#183; Australia</div>
+      <p>Conducted penetration testing for government agencies and enterprise clients. Collaborated with developers and product owners to integrate security into the development lifecycle and reviewed technical designs for security considerations.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Mar 2018 &#8212; Apr 2019</div>
+      <h3>Penetration Tester</h3>
+      <div class="company">Global Garner Sales Services &#183; India</div>
+      <p>Performed threat and vulnerability assessments on web applications and infrastructure. Managed the bug bounty program, maintained WAF configurations, and monitored security events.</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"><hr></div>
+<section id="tools" class="fade-in">
+  <div class="section-label">// Arsenal</div>
+  <h2 class="section-title">Tools &amp; Technologies</h2>
+  <p class="section-desc">The technologies and frameworks I use to identify, exploit, and help remediate security vulnerabilities.</p>
+  <div class="tech-categories">
+    <div class="tech-category">
+      <h3>&#128295; Security Testing</h3>
+      <div class="tech-tags">
+        <span class="tech-tag">Burp Suite</span>
+        <span class="tech-tag">OWASP ZAP</span>
+        <span class="tech-tag">Metasploit</span>
+        <span class="tech-tag">Nmap</span>
+        <span class="tech-tag">Nuclei</span>
+        <span class="tech-tag">SQLMap</span>
+        <span class="tech-tag">Postman</span>
+        <span class="tech-tag">Frida</span>
+        <span class="tech-tag">MobSF</span>
+      </div>
+    </div>
+    <div class="tech-category">
+      <h3>&#128300; SAST / DAST / SCA</h3>
+      <div class="tech-tags">
+        <span class="tech-tag">Snyk</span>
+        <span class="tech-tag">Checkmarx</span>
+        <span class="tech-tag">Qualys</span>
+        <span class="tech-tag">Netsparker</span>
+        <span class="tech-tag">SonarQube</span>
+      </div>
+    </div>
+    <div class="tech-category">
+      <h3>&#9729;&#65039; Cloud Platforms</h3>
+      <div class="tech-tags">
+        <span class="tech-tag">AWS</span>
+        <span class="tech-tag">Microsoft Azure</span>
+        <span class="tech-tag">Google Cloud</span>
+      </div>
+    </div>
+    <div class="tech-category">
+      <h3>&#128187; Languages</h3>
+      <div class="tech-tags">
+        <span class="tech-tag">Python</span>
+        <span class="tech-tag">JavaScript</span>
+        <span class="tech-tag">Java</span>
+        <span class="tech-tag">Bash</span>
+        <span class="tech-tag">SQL</span>
+      </div>
+    </div>
+    <div class="tech-category">
+      <h3>&#128203; Frameworks</h3>
+      <div class="tech-tags">
+        <span class="tech-tag">OWASP Top 10</span>
+        <span class="tech-tag">OWASP ASVS</span>
+        <span class="tech-tag">MITRE ATT&amp;CK</span>
+        <span class="tech-tag">NIST</span>
+        <span class="tech-tag">PCI DSS</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"><hr></div>
+<section id="certs" class="fade-in">
+  <div class="section-label">// Certifications</div>
+  <h2 class="section-title">Credentials</h2>
+  <div class="certs-grid">
+    <div class="cert-card">
+      <div class="cert-badge">&#9760;</div>
+      <h4>OSCP</h4>
+      <span>OffSec Certified Professional</span>
+    </div>
+    <div class="cert-card">
+      <div class="cert-badge">&#128376;</div>
+      <h4>EWPTXv2</h4>
+      <span>Web App Pentester eXtreme</span>
+    </div>
+    <div class="cert-card">
+      <div class="cert-badge">&#9729;&#65039;</div>
+      <h4>AZ-500</h4>
+      <span>Azure Security Engineer</span>
+    </div>
+    <div class="cert-card">
+      <div class="cert-badge">&#128216;</div>
+      <h4>Cloud Essentials</h4>
+      <span>Cloud Computing Fundamentals</span>
+    </div>
+    <div class="cert-card">
+      <div class="cert-badge">&#9989;</div>
+      <h4>ISTQB CTFL</h4>
+      <span>Certified Tester Foundation</span>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"><hr></div>
+<section id="research" class="fade-in">
+  <div class="section-label">// Research &amp; Bug Bounty</div>
+  <h2 class="section-title">Beyond the Day Job</h2>
+  <p class="section-desc">Active contributions to the security community through bug bounty platforms, research, and published work.</p>
+  <div class="bounty-grid">
+    <div class="bounty-card">
+      <div class="bounty-platform">Cobalt &#183; Dec 2021 &#8212; Present</div>
+      <h3>Core Lead Penetration Tester</h3>
+      <p>100+ engagements on Cobalt's PtaaS platform spanning cloud, APIs, mobile, internal/external networks, and PCI-scoped systems. Lead full assessment cycles with client-facing communication.</p>
+    </div>
+    <div class="bounty-card">
+      <div class="bounty-platform">Synack &#183; Feb 2021 &#8212; Dec 2024</div>
+      <h3>Red Team Member</h3>
+      <p>Advanced vulnerability research and exploitation in Synack's curated Red Team environment, delivering real-world exploitation intelligence to top-tier enterprise clients.</p>
+    </div>
+    <div class="bounty-card">
+      <div class="bounty-platform">HackerOne &#183; Jan 2025 &#8212; Present</div>
+      <h3>Pentester</h3>
+      <p>Part of HackerOne's pentest team performing security assessments for private programs across major global organisations. All work conducted off-hours with personal tooling.</p>
+    </div>
+  </div>
+
+  <div style="margin-top: 4rem;">
+    <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 1.5rem;">&#128196; Publications</h3>
+    <div class="pub-list">
+      <div class="pub-item">
+        <div>
+          <h4>Full Account Takeover via AWS Cognito Misconfiguration</h4>
+          <span>Cobalt Blog</span>
+        </div>
+        <a href="https://www.cobalt.io/blog/full-account-takeover-via-aws-cognito-misconfiguration" target="_blank" class="pub-link">Read &#8594;</a>
+      </div>
+      <div class="pub-item">
+        <div>
+          <h4>Prevention of Cross-Site Scripting Attacks in Web Applications</h4>
+          <span>IEEE EECCMC Conference</span>
+        </div>
+        <span class="pub-link">IEEE</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"><hr></div>
+<section id="contact" class="contact-section fade-in">
+  <div class="section-label">// Contact</div>
+  <h2 class="section-title">Let's Work Together</h2>
+  <p class="section-desc" style="margin-left:auto; margin-right:auto;">Have a security assessment need or want to discuss an engagement? Reach out through any of the channels below.</p>
+  <div class="contact-links" id="contactLinks"></div>
+</section>
+
+<footer>
+  <p>&#169; 2025 Jay Patel &#8212; Offensive Security Specialist &#183; Melbourne, Australia</p>
+</footer>
+
+<script>
+  // Build contact links via JS to avoid email obfuscation
+  (function() {
+    var c = document.getElementById('contactLinks');
+    var links = [
+      {href: 'https://linkedin.com/in/jaypatelk', icon: '\uD83D\uDCBC', text: 'LinkedIn', ext: true},
+      {href: 'https://github.com/ghostshift-content', icon: '\uD83D\uDC19', text: 'GitHub', ext: true}
+    ];
+    links.forEach(function(l) {
+      var a = document.createElement('a');
+      a.href = l.href;
+      a.className = 'contact-link';
+      a.textContent = l.icon + ' ' + l.text;
+      if (l.ext) { a.target = '_blank'; a.rel = 'noopener'; }
+      c.appendChild(a);
+    });
+  })();
+
+  // Hamburger menu toggle
+  document.getElementById('hamburger').addEventListener('click', function() {
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+
+  // Intersection Observer for fade-in animations
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(function(el) {
+    observer.observe(el);
+  });
+
+  // Smooth scroll for nav links
+  document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      var target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.getElementById('navLinks').classList.remove('open');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
